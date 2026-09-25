@@ -2,6 +2,7 @@
 
 
 import userModel from "../models/user.model.js"
+import bcrypt from "bcryptjs"
 
 export async function register(req, res) {
     const { email, name, password } = req.body
@@ -24,7 +25,7 @@ export async function register(req, res) {
         const user = await userModel.create({
             email,
             name,
-            password
+            passwordHash : await bcrypt.hash(password, 12)
         })
 
         return res.status(201).json({
