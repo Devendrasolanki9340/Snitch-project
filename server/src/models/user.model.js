@@ -1,31 +1,28 @@
 
 
-
 import mongoose from "mongoose";
 
-
 const userSchema = new mongoose.Schema({
-    email:{
-        type:String,
+    email: {
+        type: String,
         required: true,
         unique: true,
     },
-    namr :{
+    name: {
         type: String,
-        required : String,
+        required: true,
     },
-     password :{
+    password: {
         type: String,
-        required : true,
+        required: true,
     },
-    role:{
+    role: {
         type: String,
         default: "user",
-        enum :["user", "serller"]
+        enum: ["user", "seller"]
     }
 })
 
-const ueserModel = mongoose.model("Snitch_Users",userSchema)
+const userModel = mongoose.model("Snitch_Users", userSchema)
 
-
-export default ueserModel
+export default userModel
