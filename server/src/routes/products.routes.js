@@ -3,9 +3,9 @@
 
 import multer from "multer"
 import {  Router} from "express"
-import {createProductValidator} from  "../validators/product.validator.js"
-import  {authenticate} from "../middlewares/auth.middleware.js"
-import {createProduct, listAllProducts} from "../controller/product.controller.js"
+import {createProductValidator, unlistProductValidator} from  "../validators/product.validator.js"
+import  {authenticate , authenticatesSeller } from "../middlewares/auth.middleware.js"
+import {createProduct, listAllProducts, unlistProduct,listAllProductsToSeller} from "../controller/product.controller.js"
 
 const router  = Router()
 const upload = multer({storage: multer.memoryStorage(),
@@ -42,15 +42,9 @@ const upload = multer({storage: multer.memoryStorage(),
 router.post("/", 
     authenticate , 
     //  check the role is seller or not 
-    (req, res , next)=>{
-    if(req.user.role !==  "seller") {
-        return res.status(403).json({
-            message : "User is not authorize to create products"
-        })
-    }
-    next()
+    authenticatesSeller,
     //  required for reding the data from req.body if the formate is from-data
-}, upload.array("images"), 
+ upload.array("images"), 
 //  parse th complex data like object and into json
 (req,res,next)=>{
      req.body?.price && (req.body.price = JSON.parse(req.body.price))
@@ -74,6 +68,44 @@ createProductValidator,
 
 
 router.get("/", authenticate , listAllProducts)
+
+
+
+
+
+
+
+/**
+ * @method GET
+ * @route /api/product/seller
+ * @description Read all the products from the DB
+ * @access seller
+ */
+router.get("/seller", authenticate, authenticatesSeller, listAllProductsToSeller)
+
+
+
+
+
+/**
+ * @method PATCH
+ * @route /api/products/unlist/:id
+ * @description Unlist a product by its ID
+ * @access seller
+ */
+router.patch("/unlist/:id", authenticate, authenticatesSeller, unlistProductValidator,unlistProduct)
+
+
+
+
+
+/**
+ * @method PATCH
+ * @route /api/products/unlist/:id
+ * @description list a product by its ID
+ * @access seller
+ */
+router.patch("/unlist/:id", authenticate, authenticatesSeller , )
 
 
 

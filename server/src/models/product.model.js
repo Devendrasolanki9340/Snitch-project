@@ -52,6 +52,10 @@ const productSchema = new mongoose.Schema({
         ref: "Snitch_Users",
         required: true,
     },
+    published: {
+        type: Boolean,
+        default: false
+    }
 }, { timestamps: true })
 
 const productModel = mongoose.model("snitch-products", productSchema)
